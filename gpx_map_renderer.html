@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPX Map Renderer</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/togeojson/0.16.0/togeojson.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #181818;
+            color: white;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+        .map-section {
+            width: 50%;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+        #map {
+            width: 100%;
+            height: 90%;
+            border: 5px solid #444;
+        }
+        .controls-section {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+        }
+        .controls, .buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 80%;
+        }
+        button, select, input {
+            background-color: #ff6600;
+            border: none;
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .dropdown {
+            background-color: #222;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+        }
+        .dropdown label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .dropdown select, .dropdown input {
+            width: 100%;
+            padding: 8px;
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="map-section">
+            <div id="map"></div>
+        </div>
+        <div class="controls-section">
+            <h2>Customize Your Map</h2>
+            <div class="controls">
+                <input type="file" id="gpxUpload" accept=".gpx">
+                
+                <div class="dropdown">
+                    <label for="mapStyle">Map Style</label>
+                    <select id="mapStyle">
+                        <option value="mapbox://styles/mapbox/outdoors-v11">Outdoors</option>
+                        <option value="mapbox://styles/mapbox/dark-v10">Dark</option>
+                        <option value="mapbox://styles/mapbox/light-v10">Light</option>
+                        <option value="mapbox://styles/mapbox/satellite-v9">Satellite</option>
+                    </select>
+                </div>
+                
+                <div class="dropdown">
+                    <label for="routeColor">Route Color</label>
+                    <select id="routeColor">
+                        <option value="#FF6600">Orange</option>
+                        <option value="#FF0000">Red</option>
+                        <option value="#00FF00">Green</option>
+                        <option value="#0000FF">Blue</option>
+                    </select>
+                </div>
+                
+                <div class="dropdown">
+                    <label for="orientationSelect">Map Orientation</label>
+                    <select id="orientationSelect">
+                        <option value="landscape">Landscape</option>
+                        <option value="portrait">Portrait</option>
+                    </select>
+                </div>
+            </div>
+            <div class="buttons">
+                <button id="recenterMap">Re-centre Map</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
+        
+        let map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/outdoors-v11',
+            center: [4.8, 50.5],
+            zoom: 8
+        });
+
+        document.getElementById('mapStyle').addEventListener('change', function() {
+            map.setStyle(this.value);
+        });
+    </script>
+    <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+</body>
+</html>
